@@ -6,11 +6,12 @@ Tout l'état de mon infrastructure est décrit en code sous format de fichier (c
 
 
 ## Schéma textuel 
-Développeur
---> (Commit / Push / etc.) --> Git (code de configuration)
---> Terraform
---> Docker (container, build image)
---> ArgoCD (observe le dépôt Git)
---> Kubernetes 
---> Prometheus / Grafana (surveillance)
---> application
+_Développeur_
+--> (Commit / Push / etc.) --> Git (code de configuration)  
+--> Terraform  
+--> Docker (container, build image)  
+--> ArgoCD (observe le dépôt Git)  
+--> Kubernetes  
+--> Prometheus / Grafana (surveillance)  
+--> application  
+
