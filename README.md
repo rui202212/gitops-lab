@@ -1,7 +1,8 @@
 # gitops-lab
 introdution to GitOps
 
-## Définition de GitOps selon ma comprihension
+## Définition de GitOps selon ma comprihension  
+C'est une approche d'automatisation de la gestion et du déploiement d'infrastructure et d'applications basée sur Git comme source unique de vérité.
 Tout l'état de mon infrastructure est décrit en code sous format de fichier (comme YAML, JSON, etc.) stocké dans Git, c'est le principe de IaC = Infrastructure as Code; les changements sont faits via des Pull Request, les agents (comme Jenkins, ArgoCD, etc.) observe le dépôt  et automatise la synchronisation entre Git et l'infrastructure: si un changement est détecté (comme Commit, Pull Request, etc.), il applique la nouvelle configuration automatiquement; on a ainsi la traçabilité complète des versions.
 
 
