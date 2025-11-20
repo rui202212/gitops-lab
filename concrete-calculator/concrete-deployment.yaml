@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: concrete-calculator
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: concrete-calculator
+  template:
+    metadata:
+      labels:
+        app: concrete-calculator
+    spec:
+      containers:
+        - name: concrete-calculator
+          # image: concrete-calculator:1.0   # cas (minikube docker-env)
+          image: matougong/concrete-calculator:1.0   # cas (Docker Hub)
+          ports:
+            - containerPort: 5000
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 3
+            periodSeconds: 5

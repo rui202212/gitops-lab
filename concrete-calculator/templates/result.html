@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Résultat - Calculateur acier</title>
+  </head>
+  <body>
+    <h1>Résultats</h1>
+
+    <p>
+      As = <strong>{{ as_cm2 }} cm²</strong><br />
+      Largeur b = <strong>{{ b_mm }} mm</strong><br />
+      Enrobage e = <strong>{{ e_mm }} mm</strong>
+    </p>
+
+    <table border="1" cellpadding="8" cellspacing="0">
+      <tr>
+        <th>Type</th>
+        <th>Diamètre (mm)</th>
+        <th>Section équivalente par barre (cm²)</th>
+        <th>Nb de barres</th>
+        <th>Espacement (mm)</th>
+      </tr>
+
+      {% for r in results %}
+      <tr>
+        <td>{{ r.name }}</td>
+        <td>{{ r.diameter_mm }}</td>
+        <td>{{ r.area_per_bar_cm2 }}</td>
+        <td>{{ r.count }}</td>
+        <td>{{ r.spacing_mm }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <br />
+    <a href="{{ url_for('index') }}">Nouveau calcul</a>
+  </body>
+</html>
+
+<!-- <!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Résultat - Calculateur acier</title>
+  </head>
+  <body>
+    <h1>Résultat pour As = {{ as_cm2 }} cm²</h1>
+    <ul>
+      {% for r in results %}
+        <li>
+          {{ r.name }} (Ø {{ r.diameter_mm }} mm) — section/barre = {{ r.area_per_bar_cm2 }} cm² → 
+          <strong>{{ r.count }}</strong> barres
+        </li>
+      {% endfor %}
+    </ul>
+    <a href="{{ url_for('index') }}">Nouveau calcul</a>
+  </body>
+</html> -->
