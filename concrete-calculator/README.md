@@ -181,3 +181,25 @@ Path           : concrete-calculator/k8s
 Cluster        : https://kubernetes.default.svc
 Namespace      : concrete
 ```
+
+## Helm
+
+installer Helm sur Windows suivant la doc https://helm.sh/docs/intro/install/
+
+créer un premier chart: `helm create mychart`
+
+personnaliser le chart: ouvrir le fichier mychart/values.yaml et modifier par exemple :
+
+```yaml
+replicaCount: 2
+
+image:
+  repository: nginx
+  pullPolicy: IfNotPresent
+  tag: "latest"
+```
+  
+tester le rendu: `helm lint mychart`
+ou 
+`helm template mychart`  
+Cela affiche les manifestes Kubernetes (Deployment, Service, etc.)

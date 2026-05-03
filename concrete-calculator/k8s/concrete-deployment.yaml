@@ -15,7 +15,7 @@ spec:
       containers:
         - name: concrete-calculator
           # image: concrete-calculator:1.0   # cas (minikube docker-env)
-          image: matougong/concrete-calculator:1.0   # cas (Docker Hub)
+          image: matougong/concrete-calculator:1.0 # cas (Docker Hub)
           ports:
             - containerPort: 5000
           readinessProbe:
