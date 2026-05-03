@@ -7,9 +7,16 @@ Cette application Flask sert à calculer des armatures et ses espacements à par
 Créer et activer un environnement virtuel
 
 ```powershell
-python -m venv venv
+python -m venv venv 
+C:\Users\lurui\AppData\Local\Programs\Python\Python311\python.exe -m venv venv
+#ici je dois forcer l'utilisation d'une version de python localement
 .\venv\Scripts\Activate
-```
+```  
+
+Installer les dépendances:
+```bash  
+pip install flask psycopg2-binary
+```  
 
 Générer automatiquement requirements.txt
 
@@ -116,4 +123,44 @@ Hard reset minikube
 
 ```bash
 minikube delete
+```
+
+# Ajouter une base de données
+
+Créer une base de données PostgreSQL pour stocker des les données liées aux calculs et/ou statistiques.
+
+```bash
+docker run -d \
+  --name db \
+  -e POSTGRES_USER=user \
+  -e POSTGRES_PASSWORD=password \
+  -e POSTGRES_DB=concrete \
+  -p 5442:5432 \
+  -v postgres_data:/var/lib/postgresql \
+  postgres
+
+docker run -d --name db -e POSTGRES_USER=user -e POSTGRES_PASSWORD=password -e POSTGRES_DB=concrete -p 5442:5432 -v postgres_data:/var/lib/postgresql postgres
+```
+
+Accéder au container:
+
+```bash
+docker exec -it db psql -U user -d concrete
+```
+
+Créer une table, par exemple table `diameters` pour stocker des diamètres d'acier d'armatures:
+
+```SQL
+CREATE TABLE diameters (
+    name VARCHAR(10),
+    diameter_mm INTEGER
+);
+INSERT INTO diameters VALUES
+('HA6', 6),
+('HA8', 8),
+('HA10', 10),
+('HA12', 12),
+('HA14', 14),
+('HA16', 16),
+('HA20', 20);
 ```
