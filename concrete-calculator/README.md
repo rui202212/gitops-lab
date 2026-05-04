@@ -32,6 +32,13 @@ python app.py
 
 Ecouter sur le port 5000 en ouvrant [http://localhost:5000](http://localhost:5000)
 
+
+* Pour supprimer venv de force dans Powershell
+```powershell  
+Remove-Item -Recurse -Force venv
+```  
+
+
 ## Docker
 
 Construire l'image localement
@@ -179,3 +186,11 @@ docker-compose up --build
 docker-compose down -v # pour forcer la suppression de volume
 docker-compose up --build
 ```  
+
+## construire l'image de Flask app et pousser sur docker hub
+```bash
+docker build -t concrete-calculator:2.0 .
+
+docker tag concrete-calculator:2.0 matougong/concrete-calculator:2.0
+docker push matougong/concrete-calculator:2.0
+```

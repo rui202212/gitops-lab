@@ -15,9 +15,18 @@ spec:
       containers:
         - name: concrete-calculator
           # image: concrete-calculator:1.0   # cas (minikube docker-env)
-          image: matougong/concrete-calculator:1.0   # cas (Docker Hub)
+          image: matougong/concrete-calculator:2.0   # cas (Docker Hub)
           ports:
             - containerPort: 5000
+          env:
+          - name: DB_HOST
+            value: postgres
+          - name: DB_NAME
+            value: concrete
+          - name: DB_USER
+            value: user
+          - name: DB_PASSWORD
+            value: password
           readinessProbe:
             httpGet:
               path: /
