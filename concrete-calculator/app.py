@@ -1,18 +1,30 @@
 from math import pi, ceil
 from flask import Flask, render_template, request, redirect, url_for
 import psycopg2
+import os
 
 app = Flask(__name__)
 
 # Database connection  
 def get_db_connection():
     try:
+        """ 
+        # Connect to PostgreSQL database: case local, port 5442, db "concrete", user "user", password "password"
         conn = psycopg2.connect(
             host="localhost",
             port="5442",
             database="concrete",
             user="user",
             password="password"
+        ) 
+        """
+        # Connect using environment variables with defaults
+        conn = psycopg2.connect(
+            host=os.getenv("DB_HOST", "localhost"),
+            port=os.getenv("DB_PORT", "5432"), # Docker internal default PostgreSQL port
+            database=os.getenv("DB_NAME", "concrete"),
+            user=os.getenv("DB_USER", "user"),
+            password=os.getenv("DB_PASSWORD", "password")
         )
 
         print("✅ PostgreSQL connection successful")

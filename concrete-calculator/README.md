@@ -127,6 +127,7 @@ minikube delete
 
 # Ajouter une base de données
 
+## ajout localement `db` avec docker  
 Créer une base de données PostgreSQL pour stocker des les données liées aux calculs et/ou statistiques.
 
 ```bash
@@ -163,4 +164,18 @@ INSERT INTO diameters VALUES
 ('HA14', 14),
 ('HA16', 16),
 ('HA20', 20);
+
+-- tester avec suppresion d'une ligne puis rafraichir la page dans le navigateur
+DELETE FROM diameters WHERE name = 'HA6';
 ```
+
+## ajout docker-compose et lancer app + db  
+```bash  
+docker-compose up --build
+
+docker-compose down # pour arrêter
+docker-compose up --build
+
+docker-compose down -v # pour forcer la suppression de volume
+docker-compose up --build
+```  
