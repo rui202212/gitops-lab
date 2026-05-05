@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: concrete-calculator
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        ports:
+        - containerPort: 5000
+        env:
+        - name: DB_HOST
+          value: {{ .Values.db.host }}
+        - name: DB_NAME
+          value: {{ .Values.db.name }}
+        - name: DB_USER
+          value: {{ .Values.db.user }}
+        - name: DB_PASSWORD
+          value: {{ .Values.db.password }}
+        - name: DB_PORT
+          value: "{{ .Values.db.port }}"  

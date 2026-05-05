@@ -68,14 +68,36 @@ Démarrer minikube
 
 ```bash
 minikube start
-```
+```  
+Vérifier avec `kubectl get nodes` on doit avoir  
+```shell
+NAME       STATUS   ROLES           AGE    VERSION
+minikube   Ready    control-plane   125m   v1.32.0
+```  
+Contexte kubectl `kubectl config current-context` on doit avoir  
+```shell  
+minikube
+```  
+si ce n'est pas le cas utliser `kubectl config use-context minikube` pour corriger.
+
+
+En cas de ConfigMap: 
+```bash  
+kubectl create configmap db-init --from-file=db/init.sql
+```  
+Pour vérifier DB init (voir exécution SQL):
+```bash  
+kubectl logs <pod-postgres>
+```  
 
 Appliquer les manifests Kubernetes
 
 ```bash
 kubectl apply -f concrete-deployment.yaml
 kubectl apply -f concrete-service.yaml
-```
+# or
+kubectl apply -f k8s/
+```  
 
 Pour vérifier
 
@@ -126,9 +148,24 @@ Ouvrir un shell dans un pod
 kubectl exec -it <pod-name> -- /bin/sh
 ```
 
+Pour supprimer les ressources k8s:
+```bash
+kubectl delete -f k8s/
+```  
+Pour forcer la supression de pod:
+```bash  
+kubectl delete pod <nom> --force --grace-period=0
+```  
+
+Pour tout nettoyer dans le namespace:
+```bash  
+kubectl delete all --all
+```  
+
 Hard reset minikube
 
 ```bash
+minikube stop
 minikube delete
 ```
 
@@ -262,20 +299,92 @@ Namespace      : concrete
 
 installer Helm sur Windows suivant la doc https://helm.sh/docs/intro/install/
 
-créer un premier chart: `helm create mychart`
+| Variable        | Provient de  |
+| --------------- | ------------ |
+| `.Release.Name` | helm install |
+| `.Values.xxx`   | values.yaml  |
+| `.Chart.Name`   | Chart.yaml   |  
 
-personnaliser le chart: ouvrir le fichier mychart/values.yaml et modifier par exemple :
+créer un premier chart: `helm create <chartname>`
+
+personnaliser le chart: ouvrir le fichier concrete-chart/values.yaml et modifier par exemple :
 
 ```yaml
 replicaCount: 2
 
 image:
-  repository: nginx
-  pullPolicy: IfNotPresent
-  tag: "latest"
+  repository: matougong/concrete-calculator
+  tag: "2.0"
 ```
   
-tester le rendu: `helm lint mychart`
-ou 
-`helm template mychart`  
+tester le rendu: `helm lint <chartname>` ou `helm template <chartname>`  
 Cela affiche les manifestes Kubernetes (Deployment, Service, etc.)
+
+## tester helm  
+afficher les manifests générés:
+```bash  
+helm template concrete ./helm/concrete-chart
+# debug
+helm template concrete ./helm/concrete-chart --debug
+```  
+par exemple, affichage dans le terminal:
+```shell    
+> helm template concrete ./helm/concrete-chart --debug
+level=DEBUG msg="Original chart version" version=""
+level=DEBUG msg="Chart path" path=D:\formations\LearnIT\2025-26\20251120GitOps\gitops-lab\concrete-calculator\helm\concrete-chart
+level=DEBUG msg="number of dependencies in the chart" chart=concrete-chart dependencies=0
+---
+# Source: concrete-chart/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: concrete
+spec:
+  type: NodePort
+  selector:
+    app: concrete
+  ports:
+    - port: 80
+      targetPort: 5000
+      nodePort: 30080
+---
+# Source: concrete-chart/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: concrete
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: concrete
+  template:
+    metadata:
+      labels:
+        app: concrete
+    spec:
+      containers:
+      - name: concrete-calculator
+        image: matougong/concrete-calculator:2.0
+        ports:
+        - containerPort: 5000
+        env:
+        - name: DB_HOST
+          value: postgres
+```  
+
+## installer helm  
+```bash  
+helm install concrete ./helm/concrete-chart
+```  
+
+## modifier  
+```bash  
+helm upgrade concrete ./helm/concrete-chart
+```  
+
+## supprimer helm deployment
+équivalent de `kubectl delete`  
+```bash  
+helm uninstall concrete
+```  

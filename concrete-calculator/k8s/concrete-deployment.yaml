@@ -27,9 +27,11 @@ spec:
             value: user
           - name: DB_PASSWORD
             value: password
+          - name: DB_PORT
+            value: "5432"
           readinessProbe:
             httpGet:
               path: /
               port: 5000
-            initialDelaySeconds: 3
+            initialDelaySeconds: 5
             periodSeconds: 5
