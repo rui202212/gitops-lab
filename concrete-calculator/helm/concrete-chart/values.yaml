@@ -27,3 +27,14 @@ db:
   user: user
   password: password
   port: 5432
+
+postgres:
+  enabled: true
+  image: postgres
+  
+  db: concrete
+  user: user
+  password: password
+
+  storage:
+    size: 1Gi

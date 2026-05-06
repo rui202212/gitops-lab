@@ -231,69 +231,6 @@ docker build -t concrete-calculator:2.0 .
 docker tag concrete-calculator:2.0 matougong/concrete-calculator:2.0
 docker push matougong/concrete-calculator:2.0
 ```
-# ArgoCD  
-
-Créer un namespace pour ArgoCD
-
-```bash
-kubectl create namespace argocd
-```
-
-Installer ArgoCD
-
-```bash
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-```
-
-Vérifier les pods
-
-```bash
-kubectl get pods -n argocd
-```
-
-résultat:
-
-```sh
-PS D:\formations\LearnIT\2025-26\20251120GitOps\gitops-lab> kubectl get pods -n argocd
-NAME                                               READY   STATUS    RESTARTS       AGE
-argocd-application-controller-0                    1/1     Running   0              4m2s
-argocd-applicationset-controller-fc5545556-cknsw   1/1     Running   0              4m3s
-argocd-dex-server-f59c65cff-rffj2                  1/1     Running   1 (3m1s ago)   4m3s
-argocd-notifications-controller-59f6949d7-rz6mp    1/1     Running   0              4m3s
-argocd-redis-75c946f559-ccbrb                      1/1     Running   0              4m3s
-argocd-repo-server-6959c47c44-hwv4x                1/1     Running   0              4m2s
-argocd-server-65544f4864-zhzc4                     1/1     Running   0              4m2s
-```
-
-Exposer l'interface web ArgoCD avec port-forward et ouvrir [http://localhost:8080](http://localhost:8080)
-
-```bash
-kubectl port-forward svc/argocd-server -n argocd 8080:443
-```
-
-Récupérer le mot de passe admin
-
-```bash
-kubectl get secret argocd-initial-admin-secret -n argocd -o yaml
-```
-
-Identifiant
-
-```
-username: admin
-password brut: R1BTalRTZHhpckM0SlFyQQ==
-password décodé de base64: GPSjTSdxirC4JQrA
-```
-
-Créer une application ArgoCD dans son interface
-
-```
-Repository URL : https://github.com/rui202212/gitops-lab.git
-Revision       : main
-Path           : concrete-calculator/k8s
-Cluster        : https://kubernetes.default.svc
-Namespace      : concrete
-```
 
 # Helm  
 
@@ -383,8 +320,85 @@ helm install concrete ./helm/concrete-chart
 helm upgrade concrete ./helm/concrete-chart
 ```  
 
+## voir l'historique  
+```bash  
+helm history concrete
+```  
+on attend une sorte d'historique:
+```shell  
+> helm history concrete
+REVISION        UPDATED                         STATUS          CHART                   APP VERSION    DESCRIPTION     
+1               Tue May  5 18:32:40 2026        superseded      concrete-chart-0.1.0    1.0            Install complete
+2               Tue May  5 18:54:00 2026        superseded      concrete-chart-0.1.1    1.0            Upgrade complete
+3               Wed May  6 02:44:15 2026        deployed        concrete-chart-0.2.0    2.0            Upgrade complete
+```  
+
 ## supprimer helm deployment
 équivalent de `kubectl delete`  
 ```bash  
 helm uninstall concrete
 ```  
+
+# ArgoCD  
+
+Créer un namespace pour ArgoCD
+
+```bash
+kubectl create namespace argocd
+```
+
+Installer ArgoCD
+
+```bash
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+```
+
+Vérifier les pods
+
+```bash
+kubectl get pods -n argocd
+```
+
+résultat:
+
+```sh
+PS D:\formations\LearnIT\2025-26\20251120GitOps\gitops-lab> kubectl get pods -n argocd
+NAME                                               READY   STATUS    RESTARTS       AGE
+argocd-application-controller-0                    1/1     Running   0              4m2s
+argocd-applicationset-controller-fc5545556-cknsw   1/1     Running   0              4m3s
+argocd-dex-server-f59c65cff-rffj2                  1/1     Running   1 (3m1s ago)   4m3s
+argocd-notifications-controller-59f6949d7-rz6mp    1/1     Running   0              4m3s
+argocd-redis-75c946f559-ccbrb                      1/1     Running   0              4m3s
+argocd-repo-server-6959c47c44-hwv4x                1/1     Running   0              4m2s
+argocd-server-65544f4864-zhzc4                     1/1     Running   0              4m2s
+```
+
+Exposer l'interface web ArgoCD avec port-forward et ouvrir [http://localhost:8080](http://localhost:8080)
+
+```bash
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+```
+
+Récupérer le mot de passe admin
+
+```bash
+kubectl get secret argocd-initial-admin-secret -n argocd -o yaml
+```
+
+Identifiant
+
+```
+username: admin
+password brut: R1BTalRTZHhpckM0SlFyQQ==
+password décodé de base64: GPSjTSdxirC4JQrA
+```
+
+Créer une application ArgoCD dans son interface
+
+```
+Repository URL : https://github.com/rui202212/gitops-lab.git
+Revision       : main
+Path           : concrete-calculator/k8s
+Cluster        : https://kubernetes.default.svc
+Namespace      : concrete
+```
