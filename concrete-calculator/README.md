@@ -408,7 +408,7 @@ kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.pas
 
 ```
 username: admin
-password: xM7rroWxUe9djohD
+password: (récupérer ci-dessus)
 ```
 
 ## Créer une application ArgoCD et la déployer
@@ -459,3 +459,63 @@ kubectl describe application concrete -n argocd
 kubectl logs -n argocd deployment/argocd-application-controller
 
 ```  
+
+# Monitoring  
+Kubernetes -> Promotheus (collecte métriques) -> Grafana (dashboards) -> user (navigateur)
+
+## Installation via Helm  
+```bash  
+# ajouter repo helm
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo update
+# verifier
+helm repo list
+# créer le namespace
+kubectl create namespace monitoring
+
+# installer Prometheus
+helm install prometheus prometheus-community/prometheus -n monitoring
+# vérifier installation
+kubectl get pods -n monitoring
+kubectl get svc -n monitoring
+
+# installer Grafana
+helm install grafana grafana/grafana -n monitoring
+# vérifier installation
+kubectl get pods -n monitoring | grep Grafana
+kubectl get svc -n monitoring
+
+# ou
+# installer Prometheus, Grafana, Alertmanager, Node exporters, kube-state-metrics
+helm install monitoring prometheus-community/kube-prometheus-stack -n monitoring
+# vérifier
+kubectl get pods -n monitoring
+kubectl get svc -n monitoring
+```  
+
+## Accéder à Grafana  
+Get your grafana admin user password by running:
+
+  kubectl get secret --namespace monitoring -l app.kubernetes.io/component=admin-secret -o jsonpath="{.items[0].data.admin-password}" | base64 --decode ; echo  
+
+```bash  
+# Port-forward pour accéder à Grafana
+kubectl port-forward svc/monitoring-grafana -n monitoring 3000:80
+# Récupérer le mot de passe dans un autre terminal
+kubectl get secret --namespace monitoring -l app.kubernetes.io/component=admin-secret -o jsonpath="{.items[0].data.admin-password}" | base64 --decode && echo
+```  
+
+Connexion :
+URL : http://localhost:3000
+Utilisateur : admin
+Mot de passe : (récupérer ci-dessus)
+
+* Grafana Assistant: https://grafana.com/grafana/plugins/grafana-assistant-app/?src=grafana-oss&cnt=whats-new-modal  
+
+
+## Vérifier métriques directement  
+```bash  
+kubectl port-forward svc/monitoring-kube-prometheus-prometheus 9090
+```  
+dans le navigateur: http://localhost:9090  
