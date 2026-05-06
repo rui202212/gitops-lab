@@ -411,12 +411,16 @@ username: admin
 password: xM7rroWxUe9djohD
 ```
 
-Créer une application ArgoCD dans son interface
+## Créer une application ArgoCD et la déployer
 
-```
 Repository URL : https://github.com/rui202212/gitops-lab.git
-Revision       : main
-Path           : concrete-calculator/k8s
+targetRevision : dev
+Path           : concrete-calculator/helm/concrete-chart
 Cluster        : https://kubernetes.default.svc
-Namespace      : concrete
-```
+Namespace      : argocd
+
+
+Déployer ArgoCD app.yaml
+```bash  
+kubectl apply -f argocd/app.yaml
+```  
