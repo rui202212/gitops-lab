@@ -340,57 +340,75 @@ helm uninstall concrete
 ```  
 
 # ArgoCD  
+outil qui déploie Kubernetes automatiquement depuis Git.  
 
-Créer un namespace pour ArgoCD
-
+## Créer un namespace pour ArgoCD  
 ```bash
 kubectl create namespace argocd
 ```
 
-Installer ArgoCD
-
+## Installer ArgoCD 
 ```bash
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+# installer une version fixe plus stable
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.9.3/manifests/install.yaml
 ```
 
-Vérifier les pods
-
+## Vérifier les pods
 ```bash
 kubectl get pods -n argocd
 ```
 
-résultat:
-
+résultat:  
 ```sh
-PS D:\formations\LearnIT\2025-26\20251120GitOps\gitops-lab> kubectl get pods -n argocd
-NAME                                               READY   STATUS    RESTARTS       AGE
-argocd-application-controller-0                    1/1     Running   0              4m2s
-argocd-applicationset-controller-fc5545556-cknsw   1/1     Running   0              4m3s
-argocd-dex-server-f59c65cff-rffj2                  1/1     Running   1 (3m1s ago)   4m3s
-argocd-notifications-controller-59f6949d7-rz6mp    1/1     Running   0              4m3s
-argocd-redis-75c946f559-ccbrb                      1/1     Running   0              4m3s
-argocd-repo-server-6959c47c44-hwv4x                1/1     Running   0              4m2s
-argocd-server-65544f4864-zhzc4                     1/1     Running   0              4m2s
+> kubectl get pods -n argocd
+NAME                                                READY   STATUS    RESTARTS   AGE
+argocd-application-controller-0                     1/1     Running   0          80s
+argocd-applicationset-controller-5ff6f55574-hxft8   1/1     Running   0          81s
+argocd-dex-server-c65b55f58-strp9                   1/1     Running   0          81s
+argocd-notifications-controller-54948869bc-jjkfp    1/1     Running   0          80s
+argocd-redis-5d849fc6db-sx6kh                       1/1     Running   0          80s
+argocd-repo-server-7998764c69-zhrdr                 1/1     Running   0          80s
+argocd-server-65ff77776b-sgdjv                      1/1     Running   0          80s
 ```
 
-Exposer l'interface web ArgoCD avec port-forward et ouvrir [http://localhost:8080](http://localhost:8080)
-
+## accéder à l'interface web ArgoCD  
 ```bash
 kubectl port-forward svc/argocd-server -n argocd 8080:443
-```
+```  
+Exposer l'interface web ArgoCD avec port-forward et ouvrir [http://localhost:8080](http://localhost:8080)
 
-Récupérer le mot de passe admin
 
+## Récupérer le mot de passe admin
 ```bash
 kubectl get secret argocd-initial-admin-secret -n argocd -o yaml
 ```
+résultat:
+```sh  
+apiVersion: v1
+data:
+  password: eE03cnJvV3hVZTlkam9oRA==
+kind: Secret
+metadata:
+  creationTimestamp: "2026-05-06T01:48:24Z"
+  name: argocd-initial-admin-secret
+  namespace: argocd
+  resourceVersion: "11683"
+  uid: 2089acfe-97e8-42de-ada8-b5a959448502
+type: Opaque
+```  
+le password dessus est encodée en Base64. Pour avoir le mot de passe en clair, utiliser plutôt dans Git Bash / WSL
+```bash
+kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 --decode
+``` 
 
-Identifiant
+
+## Identifiant
 
 ```
 username: admin
-password brut: R1BTalRTZHhpckM0SlFyQQ==
-password décodé de base64: GPSjTSdxirC4JQrA
+password: xM7rroWxUe9djohD
 ```
 
 Créer une application ArgoCD dans son interface
