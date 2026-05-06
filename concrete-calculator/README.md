@@ -424,3 +424,38 @@ Déployer ArgoCD app.yaml
 ```bash  
 kubectl apply -f argocd/app.yaml
 ```  
+
+Vérifier avec `kubectl get pods` ou `kubectl get all`
+ArgoCD gère:
+- deployment  
+- service  
+- pods  
+  
+```sh  
+> kubectl get all
+NAME                            READY   STATUS    RESTARTS   AGE
+pod/concrete-69488f9899-cjwx6   1/1     Running   0          11h
+pod/concrete-69488f9899-j2b85   1/1     Running   0          10h
+pod/postgres-6db5c8c8bd-c98zf   1/1     Running   0          170m
+
+NAME                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+service/concrete     NodePort    10.98.128.111   <none>        80:30080/TCP   11h
+service/kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP        12h
+service/postgres     ClusterIP   10.97.54.241    <none>        5432/TCP       170m
+
+NAME                       READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/concrete   2/2     2            2           11h
+deployment.apps/postgres   1/1     1            1           170m
+
+NAME                                  DESIRED   CURRENT   READY   AGE
+replicaset.apps/concrete-69488f9899   2         2         2       11h
+replicaset.apps/postgres-6db5c8c8bd   1         1         1       170m
+```  
+
+## Debug et logs  
+```bash  
+kubectl describe application concrete -n argocd
+
+kubectl logs -n argocd deployment/argocd-application-controller
+
+```  
