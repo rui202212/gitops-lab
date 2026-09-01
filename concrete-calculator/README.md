@@ -15,7 +15,7 @@ C:\Users\lurui\AppData\Local\Programs\Python\Python311\python.exe -m venv venv
 
 Installer les dépendances:
 ```bash  
-pip install flask psycopg2-binary
+pip install flask psycopg2-binary pytest
 ```  
 
 Générer automatiquement requirements.txt
