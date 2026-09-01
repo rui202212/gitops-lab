@@ -38,6 +38,10 @@ Ecouter sur le port 5000 en ouvrant [http://localhost:5000](http://localhost:500
 Remove-Item -Recurse -Force venv
 ```  
 
+* Pour voir quel Python est utilisé (de l'environnement courant, par exemple de venv actif) :
+```sh  
+python -c "import sys; print(sys.executable)"
+```  
 
 ## Docker
 
@@ -519,3 +523,45 @@ Mot de passe : (récupérer ci-dessus)
 kubectl port-forward svc/monitoring-kube-prometheus-prometheus 9090
 ```  
 dans le navigateur: http://localhost:9090  
+
+
+# Tests  
+## Créer des tests automatisés  
+```text  
+Tests unitaires  
+    └── rapides  
+    └── sans DB  
+  
+Tests intégration  
+    └── avec DB  
+  
+Tests Flask  
+    └── sans DB  
+```  
+Afin de garantir la qualité du code métier, une stratégie de tests automatisés a été mise en place avec Pytest. Les fonctions critiques de calcul ont été couvertes par des tests unitaires. Les dépendances externes, notamment PostgreSQL, ont été simulées à l'aide de mocks afin d'isoler les traitements métiers et de rendre les tests reproductibles. 
+En plus des règles métiers de calcul, les accès aux données et les routes Flask ont été testés automatiquement. Les tests sont exécutés à chaque changement de code via une chaîne d'intégration continue GitHub Actions.
+Cette démarche contribue à l'intégrité du code et prépare l'intégration continue dans une chaîne DevOps/GitOps.  
+
+## Créer un fichier conftest.py pour définir l'environnement  
+```text
+environment:  
+  DB_HOST: db  
+  DB_PORT: 5432  
+  DB_NAME: concrete  
+  DB_USER: user  
+  DB_PASSWORD: password  
+```  
+
+## Lancer les tests  
+depuis la racine du projet, Pytest cherche automatiquement tous les fichiers de test : `test_*.py` et `*_test.py`:  
+```sh  
+pytest -v # -v (verbose) affiche chaque test individuellement.
+```  
+ou exécute tous les tests dans le dossier `tests/` :    
+```sh
+pytest tests -v
+```  
+ou Python lui-même lance pytest dans l'environnement Python courant (par exemple de venv actif) :  
+```sh  
+python -m pytest
+```  
