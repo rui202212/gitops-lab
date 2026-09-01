@@ -7,6 +7,10 @@ sys.path.append(
     )
 )
 
+# ======================================================
+# Test database connection and data retrieval
+# ======================================================
+
 from app import get_db_connection, get_diameters_from_db
 
 def test_postgres_connection():

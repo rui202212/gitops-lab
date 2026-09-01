@@ -215,7 +215,7 @@ DELETE FROM diameters WHERE name = 'HA6';
 
 ## ajout docker-compose et lancer app + db  
 ```bash  
-docker-compose up --build
+docker-compose up -d --build # -d (detached)
 
 docker-compose down # pour arrêter
 docker-compose up --build
