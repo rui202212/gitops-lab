@@ -1,5 +1,8 @@
 import sys
 import os
+import pytest
+
+pytestmark = pytest.mark.integration
 
 sys.path.append(
     os.path.abspath(
