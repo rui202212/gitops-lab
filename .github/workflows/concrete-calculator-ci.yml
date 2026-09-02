@@ -1,0 +1,86 @@
+name: Concrete Calculator CI
+
+on:
+
+  push:
+    branches:
+      - dev
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+
+  tests:
+
+    runs-on: ubuntu-latest
+
+    services:
+
+      postgres:
+
+        image: postgres:16
+
+        env:
+          POSTGRES_DB: concrete
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+
+        ports:
+          - 5432:5432
+
+        options: >-
+          --health-cmd "pg_isready -U user -d concrete"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    defaults:
+      run:
+        working-directory: concrete-calculator
+
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_NAME: concrete
+      DB_USER: user
+      DB_PASSWORD: password
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Wait for PostgreSQL
+        run: |
+          sleep 10
+
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Initialize database
+        run: |
+          PGPASSWORD=password psql \
+            -h localhost \
+            -U user \
+            -d concrete \
+            -f db/init.sql
+
+      - name: Run tests
+        run: |
+          python -m pytest -v
