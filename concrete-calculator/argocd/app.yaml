@@ -8,7 +8,7 @@ spec:
 
   source:
     repoURL: https://github.com/rui202212/gitops-lab.git
-    targetRevision: dev
+    targetRevision: main
     path: concrete-calculator/helm/concrete-chart
     helm:
       valueFiles:
